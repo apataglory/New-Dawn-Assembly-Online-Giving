@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Dawn Online Giving</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Flutterwave Inline Script -->
+    <script src="https://checkout.flutterwave.com/v3.js"></script>
+    <style>
+        :root {
+            --primary-green: #008248;
+            --light-green: #e6f3ed;
+            --dark-green: #005c32;
+            --accent-gold: #c5a059;
+            --white: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(153, 100%, 95%, 1) 0, transparent 50%), 
+                radial-gradient(at 100% 100%, hsla(153, 100%, 92%, 1) 0, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* Smooth scroll and animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            padding: 40px 20px;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .logo-placeholder {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-green);
+            border-radius: 20px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 24px;
+            box-shadow: 0 10px 30px rgba(0, 130, 72, 0.2);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--dark-green);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .grid-layout { grid-template-columns: 1fr; }
+        }
+
+        /* Form Card */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--dark-green);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            background: #fff;
+            font-size: 1rem;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px rgba(0, 130, 72, 0.1);
+        }
+
+        .amount-wrapper {
+            position: relative;
+        }
+
+        .amount-wrapper span {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .amount-wrapper input {
+            padding-left: 55px;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        /* Info Panel */
+        .info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .account-box {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 24px;
+            border-left: 5px solid var(--primary-green);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        }
+
+        .account-box h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .bank-details {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark-green);
+            line-height: 1.6;
+        }
+
+        .bank-details span {
+            display: block;
+            font-weight: 400;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        .location-tag {
+            background: var(--light-green);
+            padding: 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--dark-green);
+        }
+
+        /* Button Styling */
+        .pay-btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 14px;
+            border: none;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 10px 25px rgba(0, 130, 72, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .pay-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 130, 72, 0.4);
+        }
+
+        .pay-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Notification Toast */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .success { background: #10b981; }
+        .error { background: #ef4444; }
+
+        footer {
+            margin-top: 60px;
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .helper-text {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="notification" id="notification"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo-placeholder">
+               <img src="rccg_logo.gif" alt="RCCG Logo" style="width: 80px; height: 80px; border-radius: 20px;">
+            </div>
+            <h1>New Dawn Assembly</h1>
+            <p>Zonal HQ, Lagos Province 72. <br>Online payment gateway</p>
+        </header>
+
+
+        <div class="grid-layout">
+            <!-- Giving Form -->
+            <div class="card">
+                <form id="paymentForm">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="fullname" placeholder="Apata Glory" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="email" placeholder="glory@example.com" required>
+                    </div>
+
+                    <div class="grid-layout" style="grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 0;">
+                        <div class="form-group">
+                            <label>Payment Category</label>
+                            <select id="paymentType" required onchange="updateAccountInfo()">
+                                <option value="" disabled selected>Select category</option>
+                                <optgroup label="Tithes & Offering Account">
+                                    <option value="Offering">Offering</option>
+                                    <option value="Tithe">Tithe</option>
+                                    <option value="Thanksgiving">Thanksgiving</option>
+                                    <option value="Special Offering">Special Offering</option>
+                                </optgroup>
+                                <optgroup label="Project & Development Account">
+                                    <option value="Project">Project</option>
+                                    <option value="Development">Development</option>
+                                    <option value="Covenant">Covenant</option>
+                                    <option value="Seed">Seed / Vow</option>
+                                    <option value="Other">Other Contributions</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Amount (NGN)</label>
+                            <div class="amount-wrapper">
+                                <span>₦</span>
+                                <input type="number" id="amount" placeholder="5,000" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description / Purpose</label>
+                        <textarea id="description" rows="2" placeholder="e.g. March 2026 Tithe" required></textarea>
+                        <p class="helper-text">Please provide a brief description.</p>
+                    </div>
+
+                    <button type="submit" class="pay-btn" id="payButton">
+                        Proceed to Give
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Account Details Sidebar -->
+            <div class="info-panel">
+                <div class="account-box" id="accountDisplay">
+                    <h3>Account Beneficiary</h3>
+                    <div class="bank-details" id="bankDetails">
+                        Select a category...
+                        <span>Bank details will update automatically</span>
+                    </div>
+                </div>
+
+                <div class="account-box">
+                    <h3>Direct Transfer Info</h3>
+                    <div class="bank-details" style="font-size: 0.95rem;">
+                        <strong>Polaris Bank</strong>: 4091281426
+                        <span style="font-size: 0.8rem; margin-bottom: 10px;">Tithes & Offering</span>
+                        
+                        <strong>Zenith Bank</strong>: 1226496990
+                        <span style="font-size: 0.8rem;">Project & Development</span>
+                    </div>
+                </div>
+
+                <div class="location-tag">
+                    <strong>Church Address:</strong><br>
+                    18 Popoola Oladunni Street, <br>
+                    Off Isijola Street, Ikotun, <br>
+                    Lagos, Nigeria.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 RCCG New Dawn Assembly Zonal HQ. All rights reserved. <br>
+        <span style="opacity: 0.6; font-size: 0.75rem;">Created by New Dawn Media Deparment</span>
+    </footer>
+
+    <script>
+        // CONFIGURATION: Replace with your actual Flutterwave Public Key
+        const FLW_PUBLIC_KEY = "FLWPUBK_TEST-549606619ffad8a3374fe88dc6b50509-X"; 
+
+        const accountInfo = {
+            'Tithes & Offering': {
+                bank: 'Polaris Bank',
+                number: '4091281426',
+                categories: ['Offering', 'Tithe', 'Thanksgiving', 'Special Offering']
+            },
+            'Project & Development': {
+                bank: 'Zenith Bank',
+                number: '1226496990',
+                categories: ['Project', 'Development', 'Covenant', 'Seed', 'Other']
+            }
+        };
+
+        function showNotification(message, type = 'success') {
+            const toast = document.getElementById('notification');
+            toast.textContent = message;
+            toast.className = `notification ${type}`;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 5000);
+        }
+
+        function updateAccountInfo() {
+            const type = document.getElementById('paymentType').value;
+            const detailDiv = document.getElementById('bankDetails');
+            const box = document.getElementById('accountDisplay');
+
+            let selectedGroup = "";
+            if (accountInfo['Tithes & Offering'].categories.includes(type)) {
+                selectedGroup = 'Tithes & Offering';
+            } else {
+                selectedGroup = 'Project & Development';
+            }
+
+            const data = accountInfo[selectedGroup];
+            detailDiv.innerHTML = `
+                ${data.bank}
+                <span style="font-size: 1.4rem; font-weight: 800; margin: 5px 0;">${data.number}</span>
+                <span style="color: var(--primary-green); font-weight: 600;">Account: ${selectedGroup}</span>
+            `;
+            box.style.borderColor = "var(--primary-green)";
+        }
+
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const amount = document.getElementById('amount').value;
+            const email = document.getElementById('email').value;
+            const name = document.getElementById('fullname').value;
+            const type = document.getElementById('paymentType').value;
+            const desc = document.getElementById('description').value;
+
+            if (!amount || !email || !name || !type || !desc) {
+                showNotification("Please fill all fields accurately", "error");
+                return;
+            }
+
+            // Disable button during process
+            const btn = document.getElementById('payButton');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = "Processing...";
+
+            // Initialize Flutterwave Payment
+            FlutterwaveCheckout({
+                public_key: FLW_PUBLIC_KEY,
+                tx_ref: "RCCG-ND-" + Date.now(),
+                amount: amount,
+                currency: "NGN",
+                payment_options: "card, banktransfer, ussd",
+                customer: {
+                    email: email,
+                    name: name,
+                },
+                customizations: {
+                    title: "RCCG New Dawn Assembly",
+                    description: `${type}: ${desc}`,
+                    logo: "https://www.rccg.org/wp-content/uploads/2018/11/rccg_logo.png",
+                },
+                callback: function (data) {
+                    console.log("Payment successful", data);
+                    showNotification("Thank you for your seed! Your payment was successful.", "success");
+                    document.getElementById('paymentForm').reset();
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                },
+                onclose: function() {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
